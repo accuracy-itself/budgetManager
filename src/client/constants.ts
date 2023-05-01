@@ -1,0 +1,1 @@
+export namespace expensesConstants {export const showExpenses: string = "showExpenses"};

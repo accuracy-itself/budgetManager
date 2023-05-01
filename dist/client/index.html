@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Budget Manager</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/buttons.css" />
+</head>
+<div>
+  <span class="open-nav">open</span>
+</div>
+
+<body class="body">
+  <header class="header">
+    <!-- <br> -->
+
+  </header>
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#" class="home-page">Home</a>
+    <a href="#">Accounts</a>
+    <a href="#">Categories</a>
+    <a href="#">Regular payments</a>
+    <a href="#">Sign in/out</a>
+  </div>
+
+  <!-- Use any element to open the sidenav -->
+
+  <form action="" method="post">
+    <div class="container">
+      <label for="uname"><b>Username</b></label>
+      <input type="text" placeholder="Enter Username" name="uname" required>
+      <br>
+      <label for="psw"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" name="psw" required>
+      <br>
+      <button type="submit">Login</button>
+
+    </div>
+  </form>
+
+
+  <script src="socket.io/socket.io.js"></script>
+  <script>var exports = {};</script>
+  <script type="module" src="./client.js"></script>
+  <script type="module" src="./expenses.js"></script>
+  <script type="module" src="./constants.js"></script>
+  
+</body>
+
+</html>
