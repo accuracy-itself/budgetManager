@@ -63,9 +63,37 @@
 }
 
 
-.body {
+.container, .button-container {
   display:flex;
-  width: 40%;
-  margin: 0 auto;
-  text-align: center;
+  margin: auto;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap-reverse;
+  width: 60%;
+}
+
+.expense-creator {
+  display:flex;
+}
+
+.expense {
+  border-radius: 40px;
+  border: 2px solid #009879;
+  padding: 20px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+}
+
+.expense::-webkit-scrollbar {
+  display: none;
+}
+
+input, select {
+  border-radius: 10px;
 }

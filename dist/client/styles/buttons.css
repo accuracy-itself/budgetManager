@@ -1,10 +1,10 @@
 .button {
-  border: 0.1rem solid rgb(174, 223, 255);
-  border-radius: 0.2rem;
-  background-color: rgb(246, 252, 255);
+  border: 2px solid #009879;
+  border-radius: 25px;
+  background-color: #e8fffa;
   font-size: 1.5rem;
   padding: 0.5rem;
-  color: rgb(174, 223, 255);
+  color: #009879;
   font-weight: bold;
   margin: 0.2rem 0;
   cursor: pointer;
@@ -12,6 +12,6 @@
 }
 
 .button:hover {
-  background-color: rgb(174, 223, 255);
+  background-color: #009879;
   color: rgb(246, 252, 255);
 }

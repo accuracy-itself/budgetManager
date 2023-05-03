@@ -1,18 +1,14 @@
-import { Expense } from "../types/model.js";
-import { Account } from "../types/model.js";
 import { expensesConstants } from "./constants.js";
-
 export function requestUserExpenses(socket) {
     console.log("show expenses");
     socket.emit(expensesConstants.showExpenses);
 }
-
-export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[]) {
+export function showUserExpenses(socket, EXPENSES, ACCOUNTS) {
     console.log('got expenses: ', EXPENSES);
-    const contentHolder$: HTMLElement = document.querySelector('.container');
+    const contentHolder$ = document.querySelector('.container');
     contentHolder$.innerHTML = '';
-    EXPENSES.forEach((expense: Expense) => {
-        const date: Date = new Date(expense.date);
+    EXPENSES.forEach((expense) => {
+        const date = new Date(expense.date);
         contentHolder$.innerHTML += `
             <div class="expense ${expense.id}">
                 <span class="expenses-list__expense-comment">
@@ -33,21 +29,18 @@ export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[
             </div>
             `;
     });
-
-    for (let expense of document.querySelectorAll(".expense") as any) {
-        (expense.children[expense.children.length - 1] as HTMLButtonElement).onclick = () => {
+    for (let expense of document.querySelectorAll(".expense")) {
+        expense.children[expense.children.length - 1].onclick = () => {
             deleteExpense(socket, expense.classList[1]);
         };
     }
 }
-
-const deleteExpense = (socket, id: number) => {
+const deleteExpense = (socket, id) => {
     socket.emit(expensesConstants.deleteExpenses, id);
-}
-
+};
 export function addExpenseForm(socket, ACCOUNTS) {
-    const buttonHolder$: HTMLElement = document.querySelector('.button-container');
-    const contentHolder$: HTMLElement = document.querySelector('.container');
+    const buttonHolder$ = document.querySelector('.button-container');
+    const contentHolder$ = document.querySelector('.container');
     buttonHolder$.innerHTML = '';
     buttonHolder$.innerHTML += `
         <div class="expense-creator">
@@ -88,32 +81,26 @@ export function addExpenseForm(socket, ACCOUNTS) {
         </div>
         </div>
             `;
-
-    const addExpense$: HTMLButtonElement = document.querySelector(".expense-add");
-
+    const addExpense$ = document.querySelector(".expense-add");
     addExpense$.onclick = () => {
         console.log('clicked expense-add');
-        const expenseComment$: HTMLInputElement = document.querySelector(".expense-comment");
-        const expensePrice$: HTMLInputElement = document.querySelector(".expense-price");
-        const expenseAccount$: HTMLSelectElement = document.querySelector(".expense-account");
-        const expenseState$: HTMLSelectElement = document.querySelector(".expense-state");
-        const expenseState: boolean = expenseState$.options[expenseState$.selectedIndex].value == "income" ? false : true;
+        const expenseComment$ = document.querySelector(".expense-comment");
+        const expensePrice$ = document.querySelector(".expense-price");
+        const expenseAccount$ = document.querySelector(".expense-account");
+        const expenseState$ = document.querySelector(".expense-state");
+        const expenseState = expenseState$.options[expenseState$.selectedIndex].value == "income" ? false : true;
         if (expenseComment$.value.trim().length === 0 || expensePrice$.value.trim().length === 0 || expensePrice$.valueAsNumber < 1) {
             alert('Comment and normal price required!');
-        } else {
-            const expense: Expense = {
+        }
+        else {
+            const expense = {
                 id: Math.round(Math.random() * 10000),
                 comment: expenseComment$.value,
                 price: expensePrice$.valueAsNumber,
                 date: new Date(),
                 expense: expenseState
             };
-
             socket.emit(expensesConstants.addExpenses, expense);
         }
-    }
+    };
 }
-
-
-
-
