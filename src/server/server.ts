@@ -10,7 +10,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-const EXPENSES: Expense[] = [];
+let EXPENSES: Expense[] = [];
 EXPENSES.push({accountId: 0, id: 0, price: 10, comment: "socks", date: new Date('2023-05-01'), expense: true});
 EXPENSES.push({accountId: 0, id: 1, price: 100, comment: "tea", date: new Date('2023-05-02'), expense: true});
 EXPENSES.push({accountId: 0, id: 3, price: 800, comment: "found", date: new Date('2023-05-03'), expense: false});
@@ -49,7 +49,7 @@ io.on("connection", function (socket) {
     //expenses 
     socket.on(constants.showExpenses, function (s) {
         console.log("showing expenses", s);
-        console.log("expenses: ", EXPENSES);
+        //console.log("expenses: ", EXPENSES);
         socket.emit(constants.showExpenses, EXPENSES);
     });
 
@@ -66,8 +66,12 @@ io.on("connection", function (socket) {
     //accounts 
     socket.on(constants.showAccounts, function (s) {
         console.log("showing accounts", s);
-        console.log("accounts: ", ACCOUNTS);
+        //console.log("accounts: ", ACCOUNTS);
         socket.emit(constants.showAccounts, ACCOUNTS);
+    });
+
+    socket.on(constants.displayAccounts, function() {
+        socket.emit(constants.displayAccounts, ACCOUNTS);
     });
 
     socket.on(constants.addAccounts, function(account: Account) {
@@ -77,6 +81,7 @@ io.on("connection", function (socket) {
 
     socket.on(constants.deleteAccounts, function(id: number) {
         ACCOUNTS.splice(ACCOUNTS.findIndex((account) => account.id == id), 1);
+        EXPENSES = EXPENSES.filter(expense => expense.accountId != id);
         socket.emit(constants.deleteAccounts);
     })
 

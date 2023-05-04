@@ -1,26 +1,16 @@
-import {requestUserExpenses, showUserExpenses, addExpenseForm} from "./expenses.js";
-import { requestUserAccounts } from "./accounts.js";
-import {Expense} from '../types/model.js';
+import { requestUserExpenses, showUserExpenses, addExpenseForm } from "./expenses.js";
+import { requestUserAccounts, requestDisplayableUserAccounts, addAccountForm, displayAccounts } from "./accounts.js";
+import { Account, Expense } from '../types/model.js';
 import { expensesConstants } from "./constants.js";
-
-
-let socket: SocketIOClient.Socket
 
 const openNav$: HTMLElement = document.querySelector(".open-nav")!;
 const closeNav$: HTMLElement = document.querySelector(".close-nav")!;
 const contentHolder$: HTMLElement = document.querySelector('.container');
 const buttonHolder$: HTMLElement = document.querySelector('.button-container');
-const homePage$ =  document.querySelector('.home-page');
-const accountsPage$ =  document.querySelector('.accounts-page');
-const categoriesPage$ =  document.querySelector('.categories-page');
+const homePage$ = document.querySelector('.home-page');
+const accountsPage$ = document.querySelector('.accounts-page');
 
-
-interface Task {
-    taskName: string
-    taskStatus: string,
-    taskId: number,
-}
-
+let socket: SocketIOClient.Socket;
 socket = io()
 
 socket.on('connect', function () {
@@ -48,81 +38,83 @@ export function closeNav() {
 
 //home page
 homePage$.addEventListener('click', () => {
-    contentHolder$.innerHTML='';
-    buttonHolder$.innerHTML='';
+    contentHolder$.innerHTML = '';
+    buttonHolder$.innerHTML = '';
     goHome();
 });
 function goHome() {
     console.log('on click event!!!');
-    buttonHolder$.innerHTML = '';
-    buttonHolder$.innerHTML += `
+    buttonHolder$.innerHTML = `
         <button class="add-expense button">
             Add expense
         </button>
     `;
 
-    const addExpense$: HTMLButtonElement = document.querySelector(".add-expense")!;
-    
     requestUserAccounts(socket);
-    socket.on(expensesConstants.showAccounts, (ACCOUNTS) => {
-        addExpense$.onclick = () => {
-            console.log('clicked addexpense');
-            addExpenseForm(socket, ACCOUNTS);
-        }
-    })
     requestUserExpenses(socket);
 };
 
+let ACCOUNTS: Account[] = [];
+socket.on(expensesConstants.showAccounts, (accounts) => {
+    ACCOUNTS = accounts;
+    const addExpense$: HTMLButtonElement = document.querySelector(".add-expense")!;
+
+    addExpense$.onclick = () => {
+        console.log('clicked addexpense');
+        addExpenseForm(socket, ACCOUNTS);
+    }
+})
+
 socket.on(expensesConstants.showExpenses, (EXPENSES) => {
-    requestUserAccounts(socket);
-    socket.on(expensesConstants.showAccounts, (ACCOUNTS) => {
-        showUserExpenses(socket, EXPENSES, ACCOUNTS);
-    })
+    showUserExpenses(socket, EXPENSES, ACCOUNTS);
 });
 
-socket.on(expensesConstants.addExpenses, (EXPENSES) => {
-    goHome(); 
+socket.on(expensesConstants.addExpenses, () => {
+    goHome();
 });
 
-socket.on(expensesConstants.deleteExpenses, (EXPENSES) => {
-    goHome(); 
+socket.on(expensesConstants.deleteExpenses, () => {
+    goHome();
 });
 
 
 //accounts page
 accountsPage$.addEventListener('click', () => {
     console.log('clicked accounts');
-    contentHolder$.innerHTML='';
-    buttonHolder$.innerHTML='';
-    //goToAccounts();
+    contentHolder$.innerHTML = '';
+    buttonHolder$.innerHTML = '';
+    goToAccounts();
 });
-// function goToAccounts() {
-//     console.log('on click event!!!');
-//     buttonHolder$.innerHTML = '';
-//     buttonHolder$.innerHTML += `
-//         <button class="add-expense button">
-//             Add expense
-//         </button>
-//     `;
+function goToAccounts() {
+    buttonHolder$.innerHTML = `
+        <button class="add-account button">
+            Add account
+        </button>
+    `;
 
-//     const addExpense$: HTMLButtonElement = document.querySelector(".add-expense")!;
-    
-//     addExpense$.onclick = () => {
-//         console.log('clicked addexpense');
-//         addAccountForm(socket);
-//     }
+    requestDisplayableUserAccounts(socket);
+};
 
-//     requestAccountExpenses(socket);
-// };
+socket.on(expensesConstants.displayAccounts, (accounts) => {
+    ACCOUNTS = accounts;
+    const addAccount$: HTMLButtonElement = document.querySelector(".add-account")!;
 
-// socket.on(expensesConstants.showExpenses, (EXPENSES) => {
-//     showUserExpenses(socket, EXPENSES);  
-// });
+    addAccount$.onclick = () => {
+        console.log('clicked addaccount');
+        addAccountForm(socket);
+    }
 
-// socket.on(expensesConstants.addExpenses, (EXPENSES) => {
-//     goHome(); 
-// });
+    displayAccounts(socket, ACCOUNTS);
+})
 
+
+socket.on(expensesConstants.addAccounts, () => {
+    goToAccounts();
+});
+
+socket.on(expensesConstants.deleteAccounts, () => {
+    goToAccounts();
+});
 
 
 //disconnecting

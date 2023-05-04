@@ -3,6 +3,7 @@ export namespace expensesConstants {
     export const deleteExpenses: string = "deleteExpenses";
     export const addExpenses: string = "addExpenses";
     export const showAccounts: string = "showAccounts";
+    export const displayAccounts: string = "displayAccounts";
     export const deleteAccounts: string = "deleteAccounts";
     export const addAccounts: string = "addAccounts";
     export const showIncomes: string = "showIncomes";

@@ -47,7 +47,6 @@ const deleteExpense = (socket, id) => {
 };
 export function addExpenseForm(socket, ACCOUNTS) {
     const buttonHolder$ = document.querySelector('.button-container');
-    const contentHolder$ = document.querySelector('.container');
     buttonHolder$.innerHTML = '';
     buttonHolder$.innerHTML += `
         <div class="expense-creator">
@@ -84,14 +83,14 @@ export function addExpenseForm(socket, ACCOUNTS) {
             
         </div>
         <div class="expense-controls">
-            <button class="expense-add button">Add</button>
+            <button class="expense-add button">Add expense</button>
         </div>
         </div>
             `;
     const accountSelect$ = document.querySelector(".expense-account");
     ACCOUNTS.forEach((account) => {
         accountSelect$.innerHTML += `
-            <option value="${account.id}">${account.name}</option> 
+            <option value="${account.id}">${account.name} ${account.currency}</option> 
         `;
     });
     const addExpense$ = document.querySelector(".expense-add");

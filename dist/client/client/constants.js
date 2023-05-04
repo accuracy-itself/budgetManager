@@ -4,6 +4,7 @@ export var expensesConstants;
     expensesConstants.deleteExpenses = "deleteExpenses";
     expensesConstants.addExpenses = "addExpenses";
     expensesConstants.showAccounts = "showAccounts";
+    expensesConstants.displayAccounts = "displayAccounts";
     expensesConstants.deleteAccounts = "deleteAccounts";
     expensesConstants.addAccounts = "addAccounts";
     expensesConstants.showIncomes = "showIncomes";

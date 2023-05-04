@@ -57,7 +57,6 @@ const deleteExpense = (socket, id: number) => {
 
 export function addExpenseForm(socket, ACCOUNTS) {
     const buttonHolder$: HTMLElement = document.querySelector('.button-container');
-    const contentHolder$: HTMLElement = document.querySelector('.container');
     buttonHolder$.innerHTML = '';
     buttonHolder$.innerHTML += `
         <div class="expense-creator">
@@ -94,7 +93,7 @@ export function addExpenseForm(socket, ACCOUNTS) {
             
         </div>
         <div class="expense-controls">
-            <button class="expense-add button">Add</button>
+            <button class="expense-add button">Add expense</button>
         </div>
         </div>
             `;
@@ -102,7 +101,7 @@ export function addExpenseForm(socket, ACCOUNTS) {
     const accountSelect$: HTMLSelectElement = document.querySelector(".expense-account"); 
     ACCOUNTS.forEach((account: Account) => {
         accountSelect$.innerHTML += `
-            <option value="${account.id}">${account.name}</option> 
+            <option value="${account.id}">${account.name} ${account.currency}</option> 
         `;
     });    
 

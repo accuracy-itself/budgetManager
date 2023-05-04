@@ -6,107 +6,107 @@ export function requestUserAccounts(socket) {
     socket.emit(expensesConstants.showAccounts);
 }
 
-// export function showUserExpenses(EXPENSES: Expense[]) {
-//     console.log('got expenses: ', EXPENSES);
-//     const contentHolder$: HTMLElement = document.querySelector('.container');
-//     contentHolder$.innerHTML = '';
-//     EXPENSES.forEach((expense: Expense) => {
-//         const date: Date = new Date(expense.date);
-//         contentHolder$.innerHTML += `
-//             <div class="expense ${expense.id}">
-//                 <span class="expenses-list__expense-comment">
-//                     ${expense.comment}
-//                 </span>
-//                 <span class="expenses-list__expense-price">
-//                     ${expense.price}
-//                 </span>
-//                 <span class="expenses-list__expense-date">
-//                     ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()}
-//                 </span>
+export function requestDisplayableUserAccounts(socket) {
+    console.log("display accounts");
+    socket.emit(expensesConstants.displayAccounts);
+}
+
+
+export function addAccountForm(socket) {
+    const buttonHolder$: HTMLElement = document.querySelector('.button-container');
+    buttonHolder$.innerHTML = '';
+    buttonHolder$.innerHTML += `
+        <div class="account-creator">
+            <div class="account-inputs">
+                <input
+                    type="text"
+                    class="account-name"
+                    id="account-name"
+                    placeholder="Name"
+                />
+
+                <input
+                    type="number"
+                    min="1"
+                    class="account-balance"
+                    placeholder="Balance"
+                />
+
+                <input
+                    type="text"
+                    class="account-currency"
+                    id="account-currency"
+                    placeholder="Currency"
+                />
+            </div>
+            <div class="account-controls">
+                <button class="account-add button">Add account</button>
+            </div>
+        </div>
+        `;
+
+    const addAccount$: HTMLButtonElement = document.querySelector(".account-add");
+
+    addAccount$.onclick = () => {
+        console.log('clicked account-add');
+        const accountName$: HTMLInputElement = document.querySelector(".account-name");
+        const accountBalance$: HTMLInputElement = document.querySelector(".account-balance");
+        const accountCurrency$: HTMLInputElement = document.querySelector(".account-currency");
+        if (accountName$.value.trim().length === 0 ||
+            accountBalance$.value.trim().length === 0 ||
+            accountBalance$.valueAsNumber < 0 ||
+            accountCurrency$.value.trim().length === 0) {
+            alert('All fields required!');
+        } else {
+            const account: Account = {
+                id: Math.round(Math.random() * 10000),
+                name: accountName$.value,
+                balance: accountBalance$.valueAsNumber,
+                currency: accountCurrency$.value
+            };
+
+            socket.emit(expensesConstants.addAccounts, account);
+        }
+    }
+}
+
+
+export function displayAccounts(socket, ACCOUNTS: Account[]) {
+    console.log('got accounts: ', ACCOUNTS);
+
+    const headerHolder$: HTMLElement = document.querySelector('.header-content');
+    headerHolder$.innerHTML = 'ACCOUNTS';
+
+    const contentHolder$: HTMLElement = document.querySelector('.container');
+    contentHolder$.innerHTML = '';
+    ACCOUNTS.forEach((account: Account) => {
+        contentHolder$.innerHTML += `
+            <div class="account ${account.id}">
+                <span class="accounts-list__account-name">
+                    ${account.name}
+                </span> 
+                <span class="accounts-list__account-price">
+                    ${account.balance}
+                    ${account.currency}
+                </span>
                 
-//                 <span class="expenses-list__delete-expense">
-//                     &times
-//                 </span>
-//             </div>
-//             `;
-//     });
-// }
+                <button class="accounts-list__delete-account delete-button">
+                    Delete
+                </button>
+            </div>
+            `;
+    });
 
-// export function addExpenseForm(socket) {
-//     const buttonHolder$: HTMLElement = document.querySelector('.button-container');
-//     const contentHolder$: HTMLElement = document.querySelector('.container');
-//     buttonHolder$.innerHTML = '';
-//     buttonHolder$.innerHTML += `
-//         <div class="expense-creator">
-//             <div class="expense-inputs">
-//                 <input
-//                     type="text"
-//                     class="expense-comment"
-//                     id="expense-comment"
-//                     placeholder="Comment"
-//                 />
-//             <select
-//                 name="account"
-//                 id="expense-account"
-//                 class="expense-account"
-//             >
-                
-//             </select>
+    for (let account of document.querySelectorAll(".account") as any) {
+        (account.children[account.children.length - 1] as HTMLButtonElement).onclick = () => {
+            deleteAccount(socket, account.classList[1]);
+        };
+    }
+}
 
-//             <select
-//                 name="state"
-//                 id="expense-state"
-//                 class="expense-state"
-//             >
-//                 <option value="income">Income</option>
-//                 <option value="expense">Expense</option>
-//             </select>
-
-//             <input
-//               type="number"
-//               min="1"
-//               class="expense-price"
-//               placeholder="Price $"
-//             />
-            
-//         </div>
-//         <div class="expense-controls">
-//             <button class="expense-add button">Add</button>
-//         </div>
-//         </div>
-//             `;
-
-//     // <input
-//     //   type="date"
-//     //   class="expense-date"
-//     //   placeholder="Pay date"
-//     // />
-
-//     const addExpense$: HTMLButtonElement = document.querySelector(".expense-add");
-
-//     addExpense$.onclick = () => {
-//         console.log('clicked expense-add');
-//         const expenseComment$: HTMLInputElement = document.querySelector(".expense-comment");
-//         const expensePrice$: HTMLInputElement = document.querySelector(".expense-price");
-//         const expenseAccount$: HTMLSelectElement = document.querySelector(".expense-account");
-//         const expenseState$: HTMLSelectElement = document.querySelector(".expense-state");
-//         const expenseState: boolean = expenseState$.options[expenseState$.selectedIndex].value == "income" ? false : true;
-//         if (expenseComment$.value.trim().length === 0 || expensePrice$.value.trim().length === 0 || expensePrice$.valueAsNumber < 1) {
-//             alert('Comment and normal price required!');
-//         } else {
-//             const expense: Expense = {
-//                 id: Math.round(Math.random() * 10000),
-//                 comment: expenseComment$.value,
-//                 price: expensePrice$.valueAsNumber,
-//                 date: new Date(),
-//                 expense: expenseState
-//             };
-
-//             socket.emit(expensesConstants.addExpenses, expense);
-//         }
-//     }
-// }
-
+const deleteAccount = (socket, id: number) => {
+    socket.emit(expensesConstants.deleteAccounts, id);
+}
 
 
 
