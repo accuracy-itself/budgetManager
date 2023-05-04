@@ -7,6 +7,7 @@
   display: flex;
   border-radius: 40px;
   border: 2px solid #009879;
+  background-color: #f8fffe;
   padding: 20px;
   width: 100px;
   height: 100px;
@@ -14,7 +15,13 @@
   overflow: auto;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
-  
+  text-align: center;
+  justify-content: space-around;
+}
+
+.expense.true {
+  border-color: rgb(255 212 0);
+  background-color: rgb(255, 253, 245);
 }
 
 .expense::-webkit-scrollbar {
@@ -23,7 +30,12 @@
 
 .expense-creator input, select {
   margin: 0.2rem 0;
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   padding: 0.5rem;
   border-radius: 25px;
+  border: 2px solid #009879;
+  background-color: white;
+}
+.expenses-list__expense-comment {
+  font-style: italic;
 }

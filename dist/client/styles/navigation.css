@@ -39,4 +39,17 @@
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
+
+.open-nav {
+  font-size: x-large;
+  font-weight: bold;
+  z-index: 2;
+  padding: 11px;
+}
+
+.open-nav:hover {
+  cursor: pointer;
+  color: #dcfcf6;
+}
+
 /* navigation end */

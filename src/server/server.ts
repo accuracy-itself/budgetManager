@@ -56,17 +56,22 @@ io.on("connection", function (socket) {
     socket.on(constants.addExpenses, function(expense: Expense) {
         EXPENSES.push(expense);
         socket.emit(constants.addExpenses, EXPENSES);
+        const addedValue: number = expense.expense ? -expense.price : expense.price;
+        ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].balance += addedValue;
     })
 
     socket.on(constants.deleteExpenses, function(id: number) {
-        EXPENSES.splice(EXPENSES.findIndex((expense) => expense.id == id), 1);
+        const index: number = EXPENSES.findIndex((expense) => expense.id == id);
+        const substractedValue: number = EXPENSES[index].expense ? -EXPENSES[index].price : EXPENSES[index].price;
+        ACCOUNTS[ACCOUNTS.findIndex(account => account.id == EXPENSES[index].accountId)].balance += substractedValue;
+
+        EXPENSES.splice(index, 1);
         socket.emit(constants.deleteExpenses);
     })
 
     //accounts 
     socket.on(constants.showAccounts, function (s) {
         console.log("showing accounts", s);
-        //console.log("accounts: ", ACCOUNTS);
         socket.emit(constants.showAccounts, ACCOUNTS);
     });
 
@@ -77,13 +82,17 @@ io.on("connection", function (socket) {
     socket.on(constants.addAccounts, function(account: Account) {
         ACCOUNTS.push(account);
         socket.emit(constants.addAccounts, ACCOUNTS);
-    })
+    });
 
     socket.on(constants.deleteAccounts, function(id: number) {
         ACCOUNTS.splice(ACCOUNTS.findIndex((account) => account.id == id), 1);
         EXPENSES = EXPENSES.filter(expense => expense.accountId != id);
         socket.emit(constants.deleteAccounts);
-    })
+    });
+
+    socket.on(constants.updateAccounts, function(updateInfo) {
+        ACCOUNTS[ACCOUNTS.findIndex(account => account.id == updateInfo.id)].balance = updateInfo.value;
+    });
 
 });
 

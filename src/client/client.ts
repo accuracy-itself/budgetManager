@@ -9,6 +9,7 @@ const contentHolder$: HTMLElement = document.querySelector('.container');
 const buttonHolder$: HTMLElement = document.querySelector('.button-container');
 const homePage$ = document.querySelector('.home-page');
 const accountsPage$ = document.querySelector('.accounts-page');
+const signPage$ = document.querySelector('.sign-page');
 
 let socket: SocketIOClient.Socket;
 socket = io()
@@ -114,6 +115,16 @@ socket.on(expensesConstants.addAccounts, () => {
 
 socket.on(expensesConstants.deleteAccounts, () => {
     goToAccounts();
+});
+
+
+//sign page
+signPage$.addEventListener('click', () => {
+    console.log('clicked sign');
+    contentHolder$.innerHTML = 'Coming soon...';
+    buttonHolder$.innerHTML = '';
+    const headerHolder$: HTMLElement = document.querySelector('.header-content');
+    headerHolder$.innerHTML = 'SIGN IN/UP';
 });
 
 

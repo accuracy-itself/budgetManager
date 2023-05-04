@@ -7,6 +7,7 @@ const contentHolder$ = document.querySelector('.container');
 const buttonHolder$ = document.querySelector('.button-container');
 const homePage$ = document.querySelector('.home-page');
 const accountsPage$ = document.querySelector('.accounts-page');
+const signPage$ = document.querySelector('.sign-page');
 let socket;
 socket = io();
 socket.on('connect', function () {
@@ -91,6 +92,14 @@ socket.on(expensesConstants.addAccounts, () => {
 });
 socket.on(expensesConstants.deleteAccounts, () => {
     goToAccounts();
+});
+//sign page
+signPage$.addEventListener('click', () => {
+    console.log('clicked sign');
+    contentHolder$.innerHTML = 'Coming soon...';
+    buttonHolder$.innerHTML = '';
+    const headerHolder$ = document.querySelector('.header-content');
+    headerHolder$.innerHTML = 'SIGN IN/UP';
 });
 //disconnecting
 socket.on('disconnect', function (message) {

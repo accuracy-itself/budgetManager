@@ -32,17 +32,12 @@ export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[
                 <span class="expense-account">
                     ${ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].name}
                 </span>
-                <button class="expenses-list__delete-expense delete-button">
+                <button class="expenses-list__delete-expense delete-button-${expense.expense}">
                     Delete
                 </button>
             </div>
             `; 
     });
-
-    for (let expense of document.querySelectorAll(".expense true") as any) {
-        console.log('color: ', expense.style.borderColor);
-        expense.style.borderColor = "red";
-    }  
 
     for (let expense of document.querySelectorAll(".expense") as any) {
         (expense.children[expense.children.length - 1] as HTMLButtonElement).onclick = () => {

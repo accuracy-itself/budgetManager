@@ -72,8 +72,6 @@ export function addAccountForm(socket) {
 
 
 export function displayAccounts(socket, ACCOUNTS: Account[]) {
-    console.log('got accounts: ', ACCOUNTS);
-
     const headerHolder$: HTMLElement = document.querySelector('.header-content');
     headerHolder$.innerHTML = 'ACCOUNTS';
 
@@ -86,20 +84,28 @@ export function displayAccounts(socket, ACCOUNTS: Account[]) {
                     ${account.name}
                 </span> 
                 <span class="accounts-list__account-price">
-                    ${account.balance}
+                    <input type="number" min="0" class="account-balance${account.id} account-balance" value="${account.balance}"></input>
                     ${account.currency}
                 </span>
                 
                 <button class="accounts-list__delete-account delete-button">
                     Delete
                 </button>
+
+                <button class="accounts-list__delete-account update-button">
+                    Update
+                </button>
             </div>
             `;
     });
 
     for (let account of document.querySelectorAll(".account") as any) {
-        (account.children[account.children.length - 1] as HTMLButtonElement).onclick = () => {
+        (account.children[account.children.length - 2] as HTMLButtonElement).onclick = () => {
             deleteAccount(socket, account.classList[1]);
+        };
+        (account.children[account.children.length - 1] as HTMLButtonElement).onclick = () => {
+            const newBalance: number = (document.querySelector(".account-balance" + account.classList[1])as HTMLInputElement).valueAsNumber;
+            updateAccount(socket, account.classList[1], newBalance);
         };
     }
 }
@@ -108,5 +114,7 @@ const deleteAccount = (socket, id: number) => {
     socket.emit(expensesConstants.deleteAccounts, id);
 }
 
-
+const updateAccount = (socket, id: number, value: number) => {
+    socket.emit(expensesConstants.updateAccounts, {id: id, value: value});
+}
 
