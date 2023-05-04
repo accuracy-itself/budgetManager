@@ -5,11 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
+const db_connection_js_1 = require("./db-connection.js");
+const expense_service_js_1 = require("./expense-service.js");
 const port = 3000;
 const constants = require('./constants.js');
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+(0, db_connection_js_1.main)();
 let EXPENSES = [];
 EXPENSES.push({ accountId: 0, id: 0, price: 10, comment: "socks", date: new Date('2023-05-01'), expense: true });
 EXPENSES.push({ accountId: 0, id: 1, price: 100, comment: "tea", date: new Date('2023-05-02'), expense: true });
@@ -48,6 +51,7 @@ io.on("connection", function (socket) {
     });
     socket.on(constants.addExpenses, function (expense) {
         EXPENSES.push(expense);
+        expense_service_js_1.ExpenseService.addExpense(expense);
         socket.emit(constants.addExpenses, EXPENSES);
         const addedValue = expense.expense ? -expense.price : expense.price;
         ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].balance += addedValue;

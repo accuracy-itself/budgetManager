@@ -2,13 +2,17 @@ import express from 'express'
 import path from 'path'
 import {Expense} from '../types/model.js'
 import {Account} from '../types/model.js'
- 
+import {main} from './db-connection.js'
+import { ExpenseService } from './expense-service.js'
+
 const port: number = 3000;
 
 const constants = require('./constants.js');
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+
+main();
 
 let EXPENSES: Expense[] = [];
 EXPENSES.push({accountId: 0, id: 0, price: 10, comment: "socks", date: new Date('2023-05-01'), expense: true});
@@ -55,6 +59,7 @@ io.on("connection", function (socket) {
 
     socket.on(constants.addExpenses, function(expense: Expense) {
         EXPENSES.push(expense);
+        ExpenseService.addExpense(expense);
         socket.emit(constants.addExpenses, EXPENSES);
         const addedValue: number = expense.expense ? -expense.price : expense.price;
         ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].balance += addedValue;
