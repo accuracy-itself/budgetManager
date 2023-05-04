@@ -1,6 +1,7 @@
 export var expensesConstants;
 (function (expensesConstants) {
     expensesConstants.showExpenses = "showExpenses";
+    expensesConstants.getExpenses = "getExpenses";
     expensesConstants.deleteExpenses = "deleteExpenses";
     expensesConstants.addExpenses = "addExpenses";
     expensesConstants.showAccounts = "showAccounts";

@@ -1,0 +1,12 @@
+.statistic-creator {
+    display:flex;
+    column-gap: 5px;
+}
+
+.statistic-creator input {
+    margin: 0.2rem 0;
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 25px;
+    width: 40%;
+}

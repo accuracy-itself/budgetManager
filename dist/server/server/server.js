@@ -79,6 +79,13 @@ io.on("connection", function (socket) {
     socket.on(constants.updateAccounts, function (updateInfo) {
         ACCOUNTS[ACCOUNTS.findIndex(account => account.id == updateInfo.id)].balance = updateInfo.value;
     });
+    socket.on(constants.getExpenses, (dateInfo) => {
+        const firstDate = new Date(dateInfo.dateFirst);
+        const secondDate = new Date(dateInfo.dateSecond);
+        const filteredExpenses = EXPENSES.filter(expense => expense.date >= firstDate && expense.date <= secondDate);
+        socket.emit(constants.getExpenses, filteredExpenses);
+        console.log(EXPENSES);
+    });
 });
 http.listen(3000, function () {
     console.log('listening on *:', port);

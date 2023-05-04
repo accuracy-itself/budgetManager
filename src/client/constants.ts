@@ -1,5 +1,6 @@
 export namespace expensesConstants {
     export const showExpenses: string = "showExpenses";
+    export const getExpenses: string = "getExpenses";
     export const deleteExpenses: string = "deleteExpenses";
     export const addExpenses: string = "addExpenses";
     export const showAccounts: string = "showAccounts";

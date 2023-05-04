@@ -2,6 +2,7 @@ import { requestUserExpenses, showUserExpenses, addExpenseForm } from "./expense
 import { requestUserAccounts, requestDisplayableUserAccounts, addAccountForm, displayAccounts } from "./accounts.js";
 import { Account, Expense } from '../types/model.js';
 import { expensesConstants } from "./constants.js";
+import { showStatistics } from "./statistics.js";
 
 const openNav$: HTMLElement = document.querySelector(".open-nav")!;
 const closeNav$: HTMLElement = document.querySelector(".close-nav")!;
@@ -10,6 +11,7 @@ const buttonHolder$: HTMLElement = document.querySelector('.button-container');
 const homePage$ = document.querySelector('.home-page');
 const accountsPage$ = document.querySelector('.accounts-page');
 const signPage$ = document.querySelector('.sign-page');
+const statsPage$ = document.querySelector('.statistics-page');
 
 let socket: SocketIOClient.Socket;
 socket = io()
@@ -115,6 +117,13 @@ socket.on(expensesConstants.addAccounts, () => {
 
 socket.on(expensesConstants.deleteAccounts, () => {
     goToAccounts();
+});
+
+
+//statistics page
+statsPage$.addEventListener('click', () => {
+    console.log('clicked sign');
+    showStatistics(socket);
 });
 
 

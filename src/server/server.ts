@@ -94,6 +94,13 @@ io.on("connection", function (socket) {
         ACCOUNTS[ACCOUNTS.findIndex(account => account.id == updateInfo.id)].balance = updateInfo.value;
     });
 
+    socket.on(constants.getExpenses, (dateInfo) => {
+        const firstDate: Date = new Date(dateInfo.dateFirst);
+        const secondDate: Date = new Date(dateInfo.dateSecond);
+        const filteredExpenses: Expense[] = EXPENSES.filter(expense => expense.date >= firstDate && expense.date <= secondDate);
+        socket.emit(constants.getExpenses, filteredExpenses);
+        console.log(EXPENSES);
+    });
 });
 
 
