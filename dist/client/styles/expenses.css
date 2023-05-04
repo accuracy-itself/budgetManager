@@ -1,0 +1,21 @@
+.expense-creator {
+    display:flex;
+  }
+  
+.expense {
+  border-radius: 40px;
+  border: 2px solid #009879;
+  padding: 20px;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+}
+
+.expense::-webkit-scrollbar {
+  display: none;
+}

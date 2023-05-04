@@ -16,10 +16,22 @@ EXPENSES.push({accountId: 0, id: 1, price: 100, comment: "tea", date: new Date('
 EXPENSES.push({accountId: 0, id: 3, price: 800, comment: "found", date: new Date('2023-05-03'), expense: false});
 EXPENSES.push({accountId: 0, id: 4, price: 900, comment: "made", date: new Date('2023-05-03'), expense: true});
 EXPENSES.push({accountId: 0, id: 5, price: 766, comment: "found", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 0, id: 6, price: 766, comment: "apples", date: new Date('2023-05-03'), expense: true});
+EXPENSES.push({accountId: 1, id: 7, price: 766, comment: "made", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 1, id: 8, price: 766, comment: "tree money", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 1, id: 9, price: 766, comment: "tuesday", date: new Date('2023-05-03'), expense: true});
+EXPENSES.push({accountId: 1, id: 10, price: 756, comment: "cat", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 1, id: 11, price: 72366, comment: "giraffe", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 1, id: 12, price: 7466, comment: "payment", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 1, id: 13, price: 65766, comment: "house", date: new Date('2023-05-03'), expense: true});
+EXPENSES.push({accountId: 0, id: 14, price: 90766, comment: "sent", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 0, id: 15, price: 7696, comment: "parents", date: new Date('2023-05-03'), expense: false});
+EXPENSES.push({accountId: 0, id: 16, price: 7606, comment: "bought", date: new Date('2023-05-03'), expense: true});
+EXPENSES.push({accountId: 0, id: 17, price: 3266, comment: "brought", date: new Date('2023-05-03'), expense: false});
 
 const ACCOUNTS: Account[] = [];
 ACCOUNTS.push({id: 0, name: 'cash', balance: 100670, currency: "$"});
-ACCOUNTS.push({id: 2, name: 'card', balance: 10, currency: "BYN"});
+ACCOUNTS.push({id: 1, name: 'card', balance: 10, currency: "BYN"});
 
 app.use(express.static(path.join(__dirname, '../../client')));
 

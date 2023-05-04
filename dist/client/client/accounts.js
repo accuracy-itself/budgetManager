@@ -1,6 +1,6 @@
 import { expensesConstants } from "./constants.js";
 export function requestUserAccounts(socket) {
-    console.log("show expenses");
+    console.log("show accounts");
     socket.emit(expensesConstants.showAccounts);
 }
 // export function showUserExpenses(EXPENSES: Expense[]) {

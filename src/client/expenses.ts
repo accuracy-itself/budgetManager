@@ -9,17 +9,22 @@ export function requestUserExpenses(socket) {
 
 export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[]) {
     console.log('got expenses: ', EXPENSES);
+    
+    const headerHolder$: HTMLElement = document.querySelector('.header-content');
+    headerHolder$.innerHTML = 'EXPENSES';
+
     const contentHolder$: HTMLElement = document.querySelector('.container');
     contentHolder$.innerHTML = '';
     EXPENSES.forEach((expense: Expense) => {
         const date: Date = new Date(expense.date);
         contentHolder$.innerHTML += `
-            <div class="expense ${expense.id}">
+            <div class="expense ${expense.expense} ${expense.id}">
                 <span class="expenses-list__expense-comment">
                     ${expense.comment}
-                </span>
+                </span> 
                 <span class="expenses-list__expense-price">
                     ${expense.price}
+                    ${ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].currency}
                 </span>
                 <span class="expenses-list__expense-date">
                     ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()}
@@ -27,18 +32,23 @@ export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[
                 <span class="expense-account">
                     ${ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].name}
                 </span>
-                <button class="expenses-list__delete-expense">
+                <button class="expenses-list__delete-expense delete-button">
                     Delete
                 </button>
             </div>
-            `;
+            `; 
     });
+
+    for (let expense of document.querySelectorAll(".expense true") as any) {
+        console.log('color: ', expense.style.borderColor);
+        expense.style.borderColor = "red";
+    }  
 
     for (let expense of document.querySelectorAll(".expense") as any) {
         (expense.children[expense.children.length - 1] as HTMLButtonElement).onclick = () => {
-            deleteExpense(socket, expense.classList[1]);
+            deleteExpense(socket, expense.classList[2]);
         };
-    }
+    }    
 }
 
 const deleteExpense = (socket, id: number) => {
@@ -89,6 +99,13 @@ export function addExpenseForm(socket, ACCOUNTS) {
         </div>
             `;
 
+    const accountSelect$: HTMLSelectElement = document.querySelector(".expense-account"); 
+    ACCOUNTS.forEach((account: Account) => {
+        accountSelect$.innerHTML += `
+            <option value="${account.id}">${account.name}</option> 
+        `;
+    });    
+
     const addExpense$: HTMLButtonElement = document.querySelector(".expense-add");
 
     addExpense$.onclick = () => {
@@ -102,6 +119,7 @@ export function addExpenseForm(socket, ACCOUNTS) {
             alert('Comment and normal price required!');
         } else {
             const expense: Expense = {
+                accountId: Number(accountSelect$.options[expenseAccount$.selectedIndex].value),
                 id: Math.round(Math.random() * 10000),
                 comment: expenseComment$.value,
                 price: expensePrice$.valueAsNumber,
