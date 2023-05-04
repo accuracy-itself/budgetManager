@@ -27,7 +27,7 @@ export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[
                     ${ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].currency}
                 </span>
                 <span class="expenses-list__expense-date">
-                    ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDay()}
+                    ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}
                 </span>
                 <span class="expense-account">
                     ${ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].name}

@@ -38,6 +38,8 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '../../client'))
 app.get("/", function (req, res) {
     res.sendFile("../client/pages/login.html");
 });
+expense_service_js_1.ExpenseService.getExpenseByDate(new Date('2023-01-01'), new Date('2023-10-10'));
+expense_service_js_1.ExpenseService.getExpenseByDate(new Date('2023-09-09'), new Date('2023-10-10'));
 io.on("connection", function (socket) {
     console.log('user connected');
     socket.on('disconnect', function () {

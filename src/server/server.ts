@@ -43,6 +43,9 @@ app.get("/", function (req, res) {
      res.sendFile("../client/pages/login.html")
 })
 
+ExpenseService.getExpenseByDate(new Date('2023-01-01'), new Date('2023-10-10'));
+ExpenseService.getExpenseByDate(new Date('2023-09-09'), new Date('2023-10-10'));
+
 io.on("connection", function (socket) {
     console.log('user connected');
 
