@@ -48,7 +48,15 @@ export class ExpenseService {
         return Expenses;
     }
 
+    static async getExpenseById(id: number) {
+        return ExpenseModel.findOne({id: id});
+    }
+
     static async deleteExpense(id: number) {
-        await ExpenseModel.deleteOne({id: id});
+        return await ExpenseModel.deleteOne({id: id});
+    }
+
+    static async deleteExpensesByAccountId(id: number) {
+        return await ExpenseModel.deleteMany({accountId: id});
     }
 } 

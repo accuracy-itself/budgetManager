@@ -9,8 +9,16 @@ export function showUserExpenses(socket, EXPENSES, ACCOUNTS) {
     headerHolder$.innerHTML = 'EXPENSES';
     const contentHolder$ = document.querySelector('.container');
     contentHolder$.innerHTML = '';
+    let totalIncomes = 0;
+    let totalExpenses = 0;
     EXPENSES.forEach((expense) => {
         const date = new Date(expense.date);
+        if (expense.expense) {
+            totalExpenses += expense.price;
+        }
+        else {
+            totalIncomes += expense.price;
+        }
         contentHolder$.innerHTML += `
             <div class="expense ${expense.expense} ${expense.id}">
                 <span class="expenses-list__expense-comment">
@@ -32,6 +40,19 @@ export function showUserExpenses(socket, EXPENSES, ACCOUNTS) {
             </div>
             `;
     });
+    const totalHolder$ = document.querySelector('.total-container');
+    totalHolder$.innerHTML = `
+    <div class="total-values">
+        Total incomes:
+        <span class="total-incomes">
+            ${totalIncomes}.
+        </span>
+        Total expenses:
+        <span class="total-expenses">
+            ${totalExpenses}.
+        </span>
+    </div>
+    `;
     for (let expense of document.querySelectorAll(".expense")) {
         expense.children[expense.children.length - 1].onclick = () => {
             deleteExpense(socket, expense.classList[2]);
@@ -110,6 +131,46 @@ export function addExpenseForm(socket, ACCOUNTS) {
                 expense: expenseState
             };
             socket.emit(expensesConstants.addExpenses, expense);
+        }
+    };
+}
+export function addSortExpenses(socket) {
+    const buttonHolder$ = document.querySelector('.button-container');
+    buttonHolder$.innerHTML += `
+    <div class="statistic-creator">
+        <div class="statistic-inputs">
+            <input
+                type="date"
+                class="statistic-date-first"
+                id="statistic-date-first"
+                placeholder="First Date"
+            />
+
+            <input
+                type="date"
+                class="statistic-date-second"
+                id="statistic-date-second"
+                placeholder="Second Date"
+            />
+            
+        </div>
+        <div class="statistic-controls">
+            <button class="statistic-add button">Show</button>
+        </div>
+    </div>
+    `;
+    const dateFirst$ = document.querySelector(".statistic-date-first");
+    const dateSecond$ = document.querySelector(".statistic-date-second");
+    const showSats$ = document.querySelector(".statistic-add");
+    showSats$.onclick = () => {
+        if (dateFirst$.valueAsDate == null || dateSecond$.valueAsDate == null) {
+            alert('write dates!!');
+        }
+        else {
+            socket.emit(expensesConstants.getExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
+            socket.on(expensesConstants.getExpenses, (EXPENSES) => {
+                console.log(EXPENSES);
+            });
         }
     };
 }

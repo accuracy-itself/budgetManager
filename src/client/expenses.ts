@@ -9,14 +9,25 @@ export function requestUserExpenses(socket) {
 
 export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[]) {
     console.log('got expenses: ', EXPENSES);
-    
+
     const headerHolder$: HTMLElement = document.querySelector('.header-content');
     headerHolder$.innerHTML = 'EXPENSES';
 
     const contentHolder$: HTMLElement = document.querySelector('.container');
     contentHolder$.innerHTML = '';
+
+
+    let totalIncomes: number = 0;
+    let totalExpenses: number = 0;
+
     EXPENSES.forEach((expense: Expense) => {
         const date: Date = new Date(expense.date);
+        if (expense.expense) {
+            totalExpenses += expense.price;
+        } else {
+            totalIncomes += expense.price;
+        }
+
         contentHolder$.innerHTML += `
             <div class="expense ${expense.expense} ${expense.id}">
                 <span class="expenses-list__expense-comment">
@@ -36,14 +47,29 @@ export function showUserExpenses(socket, EXPENSES: Expense[], ACCOUNTS: Account[
                     Delete
                 </button>
             </div>
-            `; 
+            `;
     });
 
+    const totalHolder$: HTMLElement = document.querySelector('.total-container');
+
+    totalHolder$.innerHTML = `
+    <div class="total-values">
+        Total incomes:
+        <span class="total-incomes">
+            ${totalIncomes}.
+        </span>
+        Total expenses:
+        <span class="total-expenses">
+            ${totalExpenses}.
+        </span>
+    </div>
+    `;
+ 
     for (let expense of document.querySelectorAll(".expense") as any) {
         (expense.children[expense.children.length - 1] as HTMLButtonElement).onclick = () => {
             deleteExpense(socket, expense.classList[2]);
         };
-    }    
+    }
 }
 
 const deleteExpense = (socket, id: number) => {
@@ -94,12 +120,12 @@ export function addExpenseForm(socket, ACCOUNTS) {
         </div>
             `;
 
-    const accountSelect$: HTMLSelectElement = document.querySelector(".expense-account"); 
+    const accountSelect$: HTMLSelectElement = document.querySelector(".expense-account");
     ACCOUNTS.forEach((account: Account) => {
         accountSelect$.innerHTML += `
             <option value="${account.id}">${account.name} ${account.currency}</option> 
         `;
-    });    
+    });
 
     const addExpense$: HTMLButtonElement = document.querySelector(".expense-add");
 
@@ -127,6 +153,48 @@ export function addExpenseForm(socket, ACCOUNTS) {
     }
 }
 
+export function addSortExpenses(socket) {
+    const buttonHolder$: HTMLElement = document.querySelector('.button-container');
+    buttonHolder$.innerHTML += `
+    <div class="statistic-creator">
+        <div class="statistic-inputs">
+            <input
+                type="date"
+                class="statistic-date-first"
+                id="statistic-date-first"
+                placeholder="First Date"
+            />
+
+            <input
+                type="date"
+                class="statistic-date-second"
+                id="statistic-date-second"
+                placeholder="Second Date"
+            />
+            
+        </div>
+        <div class="statistic-controls">
+            <button class="statistic-add button">Show</button>
+        </div>
+    </div>
+    `;
+
+    const dateFirst$: HTMLInputElement = document.querySelector(".statistic-date-first");
+    const dateSecond$: HTMLInputElement = document.querySelector(".statistic-date-second");
+    const showSats$: HTMLButtonElement = document.querySelector(".statistic-add");
+
+    showSats$.onclick = () => {
+        if (dateFirst$.valueAsDate == null || dateSecond$.valueAsDate == null) {
+            alert('write dates!!')
+        } else {
+            socket.emit(expensesConstants.getExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
+            socket.on(expensesConstants.getExpenses, (EXPENSES: Expense[]) => {
+                console.log(EXPENSES);
+            });
+        }
+    }
+
+}
 
 
 

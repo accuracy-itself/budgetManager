@@ -14,6 +14,12 @@ export function showStatistics(socket) {
     buttonHolder$.innerHTML = `
     <div class="statistic-creator">
         <div class="statistic-inputs">
+           <select
+                name="account"
+                id="expense-account"
+                class="expense-account"
+            >
+
             <input
                 type="date"
                 class="statistic-date-first"

@@ -15,7 +15,7 @@
   color: rgb(246, 252, 255);
 }
 
-.delete-button, .delete-button-false, .update-button {
+.delete-button, .delete-button-true, .update-button {
   border: 2px solid #009879;
   border-radius: 25px;
   background-color: #ddfff9;
@@ -25,12 +25,12 @@
   cursor: pointer;
 }
 
-.delete-button:hover, .delete-button-false:hover, .update-button:hover {
+.delete-button:hover, .delete-button-true:hover, .update-button:hover {
   background-color: #009879;
   color: rgb(246, 252, 255);
 }
 
-.delete-button-true {
+.delete-button-false {
   border: 2px solid rgb(255 212 0);
   border-radius: 25px;
   background-color: rgb(252, 247, 227);
@@ -40,7 +40,7 @@
   cursor: pointer;
 }
 
-.delete-button-true:hover {
+.delete-button-false:hover {
   background-color: rgb(255 212 0);
   color: rgb(246, 252, 255);
 }

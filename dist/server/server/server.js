@@ -7,16 +7,13 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const db_connection_js_1 = require("./db-connection.js");
 const expense_service_js_1 = require("./expense-service.js");
+const account_service_js_1 = require("./account-service.js");
 const port = 3000;
 const constants = require('./constants.js');
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 (0, db_connection_js_1.main)();
-let EXPENSES = [];
-const ACCOUNTS = [];
-ACCOUNTS.push({ id: 0, name: 'cash', balance: 100670, currency: "$" });
-ACCOUNTS.push({ id: 1, name: 'card', balance: 10, currency: "BYN" });
 app.use(express_1.default.static(path_1.default.join(__dirname, '../../client')));
 app.get("/", function (req, res) {
     res.sendFile("../client/pages/login.html");
@@ -38,33 +35,51 @@ io.on("connection", function (socket) {
         expense_service_js_1.ExpenseService.addExpense(expense).then(() => {
             socket.emit(constants.addExpenses);
             const addedValue = expense.expense ? -expense.price : expense.price;
-            ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].balance += addedValue;
+            account_service_js_1.AccountService.updateAccount(expense.accountId, addedValue, true);
         });
     });
     socket.on(constants.deleteExpenses, function (id) {
-        expense_service_js_1.ExpenseService.deleteExpense(id).then(socket.emit(constants.deleteExpenses));
+        expense_service_js_1.ExpenseService.getExpenseById(id).then(expense => {
+            const addedValue = expense.expense ? expense.price : -expense.price;
+            account_service_js_1.AccountService.updateAccount(expense.accountId, addedValue, true);
+        });
+        expense_service_js_1.ExpenseService.deleteExpense(id).then(() => socket.emit(constants.deleteExpenses));
     });
     //accounts 
     socket.on(constants.showAccounts, function (s) {
         console.log("showing accounts", s);
-        socket.emit(constants.showAccounts, ACCOUNTS);
+        account_service_js_1.AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.showAccounts, ACCOUNTS);
+        });
     });
     socket.on(constants.displayAccounts, function () {
-        socket.emit(constants.displayAccounts, ACCOUNTS);
+        account_service_js_1.AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.displayAccounts, ACCOUNTS);
+        });
     });
     socket.on(constants.addAccounts, function (account) {
-        ACCOUNTS.push(account);
-        socket.emit(constants.addAccounts, ACCOUNTS);
+        account_service_js_1.AccountService.addAcocunt(account).then(() => {
+            socket.emit(constants.addAccounts);
+        });
     });
     socket.on(constants.deleteAccounts, function (id) {
-        ACCOUNTS.splice(ACCOUNTS.findIndex((account) => account.id == id), 1);
-        EXPENSES = EXPENSES.filter(expense => expense.accountId != id);
-        socket.emit(constants.deleteAccounts);
+        account_service_js_1.AccountService.deleteAccount(id).then(() => {
+            expense_service_js_1.ExpenseService.deleteExpensesByAccountId(id).then(() => {
+                socket.emit(constants.deleteAccounts);
+            });
+        });
     });
     socket.on(constants.updateAccounts, function (updateInfo) {
-        ACCOUNTS[ACCOUNTS.findIndex(account => account.id == updateInfo.id)].balance = updateInfo.value;
+        account_service_js_1.AccountService.updateAccount(updateInfo.id, updateInfo.value, false).then(() => {
+            socket.emit(constants.addAccounts);
+        });
     });
     socket.on(constants.getExpenses, (dateInfo) => {
+        const firstDate = new Date(dateInfo.dateFirst);
+        const secondDate = new Date(dateInfo.dateSecond);
+        expense_service_js_1.ExpenseService.getExpenseByDate(firstDate, secondDate).then(filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses));
+    });
+    socket.on(constants.getStatExpenses, (dateInfo) => {
         const firstDate = new Date(dateInfo.dateFirst);
         const secondDate = new Date(dateInfo.dateSecond);
         expense_service_js_1.ExpenseService.getExpenseByDate(firstDate, secondDate).then(filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses));

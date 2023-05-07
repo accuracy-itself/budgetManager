@@ -40,8 +40,14 @@ class ExpenseService {
         console.log("expenses with limit:", Expenses);
         return Expenses;
     }
+    static async getExpenseById(id) {
+        return db_connection_js_1.ExpenseModel.findOne({ id: id });
+    }
     static async deleteExpense(id) {
-        await db_connection_js_1.ExpenseModel.deleteOne({ id: id });
+        return await db_connection_js_1.ExpenseModel.deleteOne({ id: id });
+    }
+    static async deleteExpensesByAccountId(id) {
+        return await db_connection_js_1.ExpenseModel.deleteMany({ accountId: id });
     }
 }
 exports.ExpenseService = ExpenseService;

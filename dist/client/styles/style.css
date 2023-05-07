@@ -27,3 +27,8 @@ body {
 input, select {
   border-radius: 10px;
 }
+
+.total-container {
+  text-align: center;
+}
+

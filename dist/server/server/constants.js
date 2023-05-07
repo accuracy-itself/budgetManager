@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addCategories = exports.deleteCategories = exports.showCategories = exports.addIncomes = exports.deleteIncomes = exports.showIncomes = exports.addAccounts = exports.updateAccounts = exports.deleteAccounts = exports.displayAccounts = exports.showAccounts = exports.addExpenses = exports.deleteExpenses = exports.getExpenses = exports.showExpenses = void 0;
+exports.addCategories = exports.deleteCategories = exports.showCategories = exports.addIncomes = exports.deleteIncomes = exports.showIncomes = exports.addAccounts = exports.updateAccounts = exports.deleteAccounts = exports.displayAccounts = exports.showAccounts = exports.addExpenses = exports.deleteExpenses = exports.getStatExpenses = exports.getExpenses = exports.showExpenses = void 0;
 exports.showExpenses = "showExpenses";
 exports.getExpenses = "getExpenses";
+exports.getStatExpenses = "getStatExpenses";
 exports.deleteExpenses = "deleteExpenses";
 exports.addExpenses = "addExpenses";
 exports.showAccounts = "showAccounts";

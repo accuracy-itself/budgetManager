@@ -1,19 +1,7 @@
 import { Schema, model } from "mongoose";
-import { Expense } from "../types/model.js";
+import { Expense, Account } from "../types/model.js";
 
 const mongoose = require('mongoose');
-
-
-const ProjectSchema = new Schema({
-    name: String,
-    stars: Number
-}, {
-    query: {
-        byName(name: string) {
-            return this.find({ name });
-        }
-    }
-});
 
 const expensesSchema = new Schema({
     id: { type: Number, required: true },
@@ -32,7 +20,23 @@ const expensesSchema = new Schema({
 
 export const ExpenseModel = model<Expense>('Expense', expensesSchema);
 
-//main().catch(err => console.log(err));
+
+const accountsSchema = new Schema({
+    id: { type: Number, required: true },
+    currency: { type: String, required: true },
+    name: { type: String, required: true },
+    balance: { type: Number, required: true },
+}, {
+    query: {
+        byId(id: number) {
+            return this.find({ id });
+        }
+    }
+});
+
+export const AccountModel = model<Account>('Account', accountsSchema);
+
+main().catch(err => console.log(err));
 
 export async function main() {
     console.log('call main');

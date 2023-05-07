@@ -2,8 +2,9 @@ import express from 'express'
 import path from 'path'
 import { Expense } from '../types/model.js'
 import { Account } from '../types/model.js'
-import { main } from './db-connection.js'
+import { AccountModel, main } from './db-connection.js'
 import { ExpenseService } from './expense-service.js'
+import { AccountService } from './account-service.js'
 
 const port: number = 3000;
 
@@ -13,13 +14,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 main();
-
-let EXPENSES: Expense[] = [];
-
-
-const ACCOUNTS: Account[] = [];
-ACCOUNTS.push({ id: 0, name: 'cash', balance: 100670, currency: "$" });
-ACCOUNTS.push({ id: 1, name: 'card', balance: 10, currency: "BYN" });
 
 app.use(express.static(path.join(__dirname, '../../client')));
 
@@ -47,12 +41,16 @@ io.on("connection", function (socket) {
         ExpenseService.addExpense(expense).then(() => {
             socket.emit(constants.addExpenses);
             const addedValue: number = expense.expense ? -expense.price : expense.price;
-            ACCOUNTS[ACCOUNTS.findIndex(account => account.id == expense.accountId)].balance += addedValue;
+            AccountService.updateAccount(expense.accountId, addedValue, true);
         });
     })
 
     socket.on(constants.deleteExpenses, function (id: number) {
-        ExpenseService.deleteExpense(id).then(
+        ExpenseService.getExpenseById(id).then(expense => {
+            const addedValue: number = expense.expense ? expense.price : -expense.price;
+            AccountService.updateAccount(expense.accountId, addedValue, true);
+        })
+        ExpenseService.deleteExpense(id).then(() =>
             socket.emit(constants.deleteExpenses)
         );
     })
@@ -60,29 +58,46 @@ io.on("connection", function (socket) {
     //accounts 
     socket.on(constants.showAccounts, function (s) {
         console.log("showing accounts", s);
-        socket.emit(constants.showAccounts, ACCOUNTS);
+        AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.showAccounts, ACCOUNTS);
+        })
     });
 
     socket.on(constants.displayAccounts, function () {
-        socket.emit(constants.displayAccounts, ACCOUNTS);
+        AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.displayAccounts, ACCOUNTS);
+        })
     });
 
     socket.on(constants.addAccounts, function (account: Account) {
-        ACCOUNTS.push(account);
-        socket.emit(constants.addAccounts, ACCOUNTS);
+        AccountService.addAcocunt(account).then(() => {
+            socket.emit(constants.addAccounts);
+        })
     });
 
     socket.on(constants.deleteAccounts, function (id: number) {
-        ACCOUNTS.splice(ACCOUNTS.findIndex((account) => account.id == id), 1);
-        EXPENSES = EXPENSES.filter(expense => expense.accountId != id);
-        socket.emit(constants.deleteAccounts);
+        AccountService.deleteAccount(id).then(() => {
+            ExpenseService.deleteExpensesByAccountId(id).then(() => {
+                socket.emit(constants.deleteAccounts);
+            })
+        })
     });
 
     socket.on(constants.updateAccounts, function (updateInfo) {
-        ACCOUNTS[ACCOUNTS.findIndex(account => account.id == updateInfo.id)].balance = updateInfo.value;
+        AccountService.updateAccount(updateInfo.id, updateInfo.value, false).then(() => {
+            socket.emit(constants.addAccounts);
+        })
     });
 
     socket.on(constants.getExpenses, (dateInfo) => {
+        const firstDate: Date = new Date(dateInfo.dateFirst);
+        const secondDate: Date = new Date(dateInfo.dateSecond);
+        ExpenseService.getExpenseByDate(firstDate, secondDate).then(
+            filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses
+            ));
+    });
+
+    socket.on(constants.getStatExpenses, (dateInfo) => {
         const firstDate: Date = new Date(dateInfo.dateFirst);
         const secondDate: Date = new Date(dateInfo.dateSecond);
         ExpenseService.getExpenseByDate(firstDate, secondDate).then(

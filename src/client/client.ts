@@ -1,4 +1,4 @@
-import { requestUserExpenses, showUserExpenses, addExpenseForm } from "./expenses.js";
+import { requestUserExpenses, showUserExpenses, addExpenseForm, addSortExpenses } from "./expenses.js";
 import { requestUserAccounts, requestDisplayableUserAccounts, addAccountForm, displayAccounts } from "./accounts.js";
 import { Account, Expense } from '../types/model.js';
 import { expensesConstants } from "./constants.js";
@@ -8,6 +8,7 @@ const openNav$: HTMLElement = document.querySelector(".open-nav")!;
 const closeNav$: HTMLElement = document.querySelector(".close-nav")!;
 const contentHolder$: HTMLElement = document.querySelector('.container');
 const buttonHolder$: HTMLElement = document.querySelector('.button-container');
+const totalHolder$: HTMLElement = document.querySelector('.total-container');
 const homePage$ = document.querySelector('.home-page');
 const accountsPage$ = document.querySelector('.accounts-page');
 const signPage$ = document.querySelector('.sign-page');
@@ -43,6 +44,7 @@ export function closeNav() {
 homePage$.addEventListener('click', () => {
     contentHolder$.innerHTML = '';
     buttonHolder$.innerHTML = '';
+    totalHolder$.innerHTML = '';
     goHome();
 });
 function goHome() {
@@ -53,45 +55,8 @@ function goHome() {
         </button>
     `;
 
-    buttonHolder$.innerHTML += `
-    <div class="statistic-creator">
-        <div class="statistic-inputs">
-            <input
-                type="date"
-                class="statistic-date-first"
-                id="statistic-date-first"
-                placeholder="First Date"
-            />
 
-            <input
-                type="date"
-                class="statistic-date-second"
-                id="statistic-date-second"
-                placeholder="Second Date"
-            />
-            
-        </div>
-        <div class="statistic-controls">
-            <button class="statistic-add button">Show</button>
-        </div>
-    </div>
-    `;
-
-    const dateFirst$: HTMLInputElement = document.querySelector(".statistic-date-first");
-    const dateSecond$: HTMLInputElement = document.querySelector(".statistic-date-second");
-    const showSats$: HTMLButtonElement = document.querySelector(".statistic-add");
-
-    showSats$.onclick = () => {
-        if(dateFirst$.valueAsDate == null || dateSecond$.valueAsDate == null) {
-            alert('write dates!!')
-        } else {
-            socket.emit(expensesConstants.getExpenses, {dateFirst: dateFirst$.value, dateSecond: dateSecond$.value});
-        socket.on(expensesConstants.getExpenses, (EXPENSES: Expense[]) => {
-            console.log(EXPENSES);
-        });
-        }
-    }
-
+    addSortExpenses(socket);
     requestUserAccounts(socket);
     requestUserExpenses(socket);
 };
@@ -167,6 +132,8 @@ socket.on(expensesConstants.deleteAccounts, () => {
 statsPage$.addEventListener('click', () => {
     contentHolder$.innerHTML = '';
     buttonHolder$.innerHTML = '';
+    totalHolder$.innerHTML = '';
+
     console.log('clicked sign');
     showStatistics(socket);
 });
@@ -177,6 +144,7 @@ signPage$.addEventListener('click', () => {
     console.log('clicked sign');
     contentHolder$.innerHTML = 'Coming soon...';
     buttonHolder$.innerHTML = '';
+    totalHolder$.innerHTML = '';
     const headerHolder$: HTMLElement = document.querySelector('.header-content');
     headerHolder$.innerHTML = 'SIGN IN/UP';
 });

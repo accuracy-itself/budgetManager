@@ -19,7 +19,7 @@
   justify-content: space-around;
 }
 
-.expense.true {
+.expense.false {
   border-color: rgb(255 212 0);
   background-color: rgb(255, 253, 245);
 }
