@@ -3,7 +3,7 @@ import { deleteExpenses } from './constants.js';
 import { ExpenseModel } from './db-connection.js';
 
 function convertToExpense(expenseDto) {
-    let expense: Expense = {
+    const expense: Expense = {
         id: expenseDto.id,
         price: expenseDto.price,
         accountId: expenseDto.accountId,
@@ -28,7 +28,6 @@ export class ExpenseService {
                 $lte: dateSecondString,
             }
         }).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
-        //}).then(expenses => console.log(expenses));    
         console.log(Expenses);
 
         return Expenses;
@@ -39,9 +38,17 @@ export class ExpenseService {
         await expenseNew.save();
     }
 
+    static async getAllExpensesWithLimit() {
+        let Expenses: Expense[] = [];
+        await ExpenseModel.find({})
 
+            .then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
+        console.log("expenses with limit:", Expenses);
+
+        return Expenses;
+    }
 
     static async deleteExpense(id: number) {
-
+        await ExpenseModel.deleteOne({id: id});
     }
 } 

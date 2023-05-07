@@ -42,6 +42,43 @@ function goHome() {
             Add expense
         </button>
     `;
+    buttonHolder$.innerHTML += `
+    <div class="statistic-creator">
+        <div class="statistic-inputs">
+            <input
+                type="date"
+                class="statistic-date-first"
+                id="statistic-date-first"
+                placeholder="First Date"
+            />
+
+            <input
+                type="date"
+                class="statistic-date-second"
+                id="statistic-date-second"
+                placeholder="Second Date"
+            />
+            
+        </div>
+        <div class="statistic-controls">
+            <button class="statistic-add button">Show</button>
+        </div>
+    </div>
+    `;
+    const dateFirst$ = document.querySelector(".statistic-date-first");
+    const dateSecond$ = document.querySelector(".statistic-date-second");
+    const showSats$ = document.querySelector(".statistic-add");
+    showSats$.onclick = () => {
+        if (dateFirst$.valueAsDate == null || dateSecond$.valueAsDate == null) {
+            alert('write dates!!');
+        }
+        else {
+            socket.emit(expensesConstants.getExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
+            socket.on(expensesConstants.getExpenses, (EXPENSES) => {
+                console.log(EXPENSES);
+            });
+        }
+    };
     requestUserAccounts(socket);
     requestUserExpenses(socket);
 }
@@ -56,6 +93,9 @@ socket.on(expensesConstants.showAccounts, (accounts) => {
     };
 });
 socket.on(expensesConstants.showExpenses, (EXPENSES) => {
+    showUserExpenses(socket, EXPENSES, ACCOUNTS);
+});
+socket.on(expensesConstants.getExpenses, (EXPENSES) => {
     showUserExpenses(socket, EXPENSES, ACCOUNTS);
 });
 socket.on(expensesConstants.addExpenses, () => {
@@ -97,6 +137,8 @@ socket.on(expensesConstants.deleteAccounts, () => {
 });
 //statistics page
 statsPage$.addEventListener('click', () => {
+    contentHolder$.innerHTML = '';
+    buttonHolder$.innerHTML = '';
     console.log('clicked sign');
     showStatistics(socket);
 });

@@ -33,8 +33,8 @@ export function showStatistics(socket) {
     const dateSecond$ = document.querySelector(".statistic-date-second");
     const showSats$ = document.querySelector(".statistic-add");
     showSats$.onclick = () => {
-        socket.emit(expensesConstants.getExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
-        socket.on(expensesConstants.getExpenses, (EXPENSES) => {
+        socket.emit(expensesConstants.getStatExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
+        socket.on(expensesConstants.getStatExpenses, (EXPENSES) => {
             console.log(EXPENSES);
         });
     };

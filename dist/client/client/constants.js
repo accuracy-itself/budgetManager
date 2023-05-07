@@ -2,6 +2,7 @@ export var expensesConstants;
 (function (expensesConstants) {
     expensesConstants.showExpenses = "showExpenses";
     expensesConstants.getExpenses = "getExpenses";
+    expensesConstants.getStatExpenses = "getStatExpenses";
     expensesConstants.deleteExpenses = "deleteExpenses";
     expensesConstants.addExpenses = "addExpenses";
     expensesConstants.showAccounts = "showAccounts";

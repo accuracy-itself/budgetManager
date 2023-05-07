@@ -53,6 +53,7 @@ const deleteExpense = (socket, id: number) => {
 export function addExpenseForm(socket, ACCOUNTS) {
     const buttonHolder$: HTMLElement = document.querySelector('.button-container');
     buttonHolder$.innerHTML = '';
+
     buttonHolder$.innerHTML += `
         <div class="expense-creator">
             <div class="expense-inputs">

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExpenseService = void 0;
 const db_connection_js_1 = require("./db-connection.js");
 function convertToExpense(expenseDto) {
-    let expense = {
+    const expense = {
         id: expenseDto.id,
         price: expenseDto.price,
         accountId: expenseDto.accountId,
@@ -26,7 +26,6 @@ class ExpenseService {
                 $lte: dateSecondString,
             }
         }).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
-        //}).then(expenses => console.log(expenses));    
         console.log(Expenses);
         return Expenses;
     }
@@ -34,7 +33,15 @@ class ExpenseService {
         const expenseNew = new db_connection_js_1.ExpenseModel(expense);
         await expenseNew.save();
     }
+    static async getAllExpensesWithLimit() {
+        let Expenses = [];
+        await db_connection_js_1.ExpenseModel.find({})
+            .then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
+        console.log("expenses with limit:", Expenses);
+        return Expenses;
+    }
     static async deleteExpense(id) {
+        await db_connection_js_1.ExpenseModel.deleteOne({ id: id });
     }
 }
 exports.ExpenseService = ExpenseService;

@@ -40,9 +40,10 @@ export function showStatistics(socket) {
     const showSats$: HTMLButtonElement = document.querySelector(".statistic-add");
 
     showSats$.onclick = () => {
-        socket.emit(expensesConstants.getExpenses, {dateFirst: dateFirst$.value, dateSecond: dateSecond$.value});
-        socket.on(expensesConstants.getExpenses, (EXPENSES: Expense[]) => {
+        socket.emit(expensesConstants.getStatExpenses, {dateFirst: dateFirst$.value, dateSecond: dateSecond$.value});
+        socket.on(expensesConstants.getStatExpenses, (EXPENSES: Expense[]) => {
             console.log(EXPENSES);
+
         });
     }
     
