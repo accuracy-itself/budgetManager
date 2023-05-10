@@ -18,8 +18,6 @@ app.use(express_1.default.static(path_1.default.join(__dirname, '../../client'))
 app.get("/", function (req, res) {
     res.sendFile("../client/pages/login.html");
 });
-expense_service_js_1.ExpenseService.getExpenseByDate(new Date('2023-01-01'), new Date('2023-10-10'));
-expense_service_js_1.ExpenseService.getExpenseByDate(new Date('2023-09-09'), new Date('2023-10-10'));
 io.on("connection", function (socket) {
     console.log('user connected');
     socket.on('disconnect', function () {
@@ -42,8 +40,8 @@ io.on("connection", function (socket) {
         expense_service_js_1.ExpenseService.getExpenseById(id).then(expense => {
             const addedValue = expense.expense ? expense.price : -expense.price;
             account_service_js_1.AccountService.updateAccount(expense.accountId, addedValue, true);
+            expense_service_js_1.ExpenseService.deleteExpense(id).then(() => socket.emit(constants.deleteExpenses));
         });
-        expense_service_js_1.ExpenseService.deleteExpense(id).then(() => socket.emit(constants.deleteExpenses));
     });
     //accounts 
     socket.on(constants.showAccounts, function (s) {
@@ -55,6 +53,11 @@ io.on("connection", function (socket) {
     socket.on(constants.displayAccounts, function () {
         account_service_js_1.AccountService.getAcounts().then((ACCOUNTS) => {
             socket.emit(constants.displayAccounts, ACCOUNTS);
+        });
+    });
+    socket.on(constants.getStatAccounts, function () {
+        account_service_js_1.AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.getStatAccounts, ACCOUNTS);
         });
     });
     socket.on(constants.addAccounts, function (account) {
@@ -77,12 +80,13 @@ io.on("connection", function (socket) {
     socket.on(constants.getExpenses, (dateInfo) => {
         const firstDate = new Date(dateInfo.dateFirst);
         const secondDate = new Date(dateInfo.dateSecond);
-        expense_service_js_1.ExpenseService.getExpenseByDate(firstDate, secondDate).then(filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses));
+        expense_service_js_1.ExpenseService.getExpenseByDateAndAccount(firstDate, secondDate, null).then(filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses));
     });
     socket.on(constants.getStatExpenses, (dateInfo) => {
         const firstDate = new Date(dateInfo.dateFirst);
         const secondDate = new Date(dateInfo.dateSecond);
-        expense_service_js_1.ExpenseService.getExpenseByDate(firstDate, secondDate).then(filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses));
+        const account = dateInfo.account;
+        expense_service_js_1.ExpenseService.getExpenseByDateAndAccount(firstDate, secondDate, account).then(filteredExpenses => socket.emit(constants.getStatExpenses, filteredExpenses));
     });
 });
 http.listen(3000, function () {

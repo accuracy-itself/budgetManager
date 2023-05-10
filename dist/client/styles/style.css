@@ -4,9 +4,12 @@
 }
 
 
-body {
+.body {
   margin : 0;
   font-family: 'Ubuntu', sans-serif;
+  overflow: auto;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
 }
 
 .main {
@@ -31,4 +34,6 @@ input, select {
 .total-container {
   text-align: center;
 }
+
+
 

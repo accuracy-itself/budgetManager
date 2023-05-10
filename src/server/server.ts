@@ -21,8 +21,6 @@ app.get("/", function (req, res) {
     res.sendFile("../client/pages/login.html")
 })
 
-ExpenseService.getExpenseByDate(new Date('2023-01-01'), new Date('2023-10-10'));
-ExpenseService.getExpenseByDate(new Date('2023-09-09'), new Date('2023-10-10'));
 
 io.on("connection", function (socket) {
     console.log('user connected');
@@ -49,10 +47,11 @@ io.on("connection", function (socket) {
         ExpenseService.getExpenseById(id).then(expense => {
             const addedValue: number = expense.expense ? expense.price : -expense.price;
             AccountService.updateAccount(expense.accountId, addedValue, true);
+            ExpenseService.deleteExpense(id).then(() =>
+                socket.emit(constants.deleteExpenses)
+            );
         })
-        ExpenseService.deleteExpense(id).then(() =>
-            socket.emit(constants.deleteExpenses)
-        );
+
     })
 
     //accounts 
@@ -66,6 +65,12 @@ io.on("connection", function (socket) {
     socket.on(constants.displayAccounts, function () {
         AccountService.getAcounts().then((ACCOUNTS) => {
             socket.emit(constants.displayAccounts, ACCOUNTS);
+        })
+    });
+
+    socket.on(constants.getStatAccounts, function () {
+        AccountService.getAcounts().then((ACCOUNTS) => {
+            socket.emit(constants.getStatAccounts, ACCOUNTS);
         })
     });
 
@@ -92,7 +97,7 @@ io.on("connection", function (socket) {
     socket.on(constants.getExpenses, (dateInfo) => {
         const firstDate: Date = new Date(dateInfo.dateFirst);
         const secondDate: Date = new Date(dateInfo.dateSecond);
-        ExpenseService.getExpenseByDate(firstDate, secondDate).then(
+        ExpenseService.getExpenseByDateAndAccount(firstDate, secondDate, null).then(
             filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses
             ));
     });
@@ -100,8 +105,9 @@ io.on("connection", function (socket) {
     socket.on(constants.getStatExpenses, (dateInfo) => {
         const firstDate: Date = new Date(dateInfo.dateFirst);
         const secondDate: Date = new Date(dateInfo.dateSecond);
-        ExpenseService.getExpenseByDate(firstDate, secondDate).then(
-            filteredExpenses => socket.emit(constants.getExpenses, filteredExpenses
+        const account: Account = dateInfo.account;
+        ExpenseService.getExpenseByDateAndAccount(firstDate, secondDate, account).then(
+            filteredExpenses => socket.emit(constants.getStatExpenses, filteredExpenses
             ));
     });
 });

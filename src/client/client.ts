@@ -2,13 +2,16 @@ import { requestUserExpenses, showUserExpenses, addExpenseForm, addSortExpenses 
 import { requestUserAccounts, requestDisplayableUserAccounts, addAccountForm, displayAccounts } from "./accounts.js";
 import { Account, Expense } from '../types/model.js';
 import { expensesConstants } from "./constants.js";
-import { showStatistics } from "./statistics.js";
+import { requestStatAccounts, showStatForm } from "./statistics.js";
 
 const openNav$: HTMLElement = document.querySelector(".open-nav")!;
 const closeNav$: HTMLElement = document.querySelector(".close-nav")!;
 const contentHolder$: HTMLElement = document.querySelector('.container');
 const buttonHolder$: HTMLElement = document.querySelector('.button-container');
 const totalHolder$: HTMLElement = document.querySelector('.total-container');
+const plotHolder$: HTMLElement = document.querySelector('.plot-holder');
+const valueHolder$: HTMLElement = document.querySelector('.value-holder');
+
 const homePage$ = document.querySelector('.home-page');
 const accountsPage$ = document.querySelector('.accounts-page');
 const signPage$ = document.querySelector('.sign-page');
@@ -45,6 +48,10 @@ homePage$.addEventListener('click', () => {
     contentHolder$.innerHTML = '';
     buttonHolder$.innerHTML = '';
     totalHolder$.innerHTML = '';
+    plotHolder$.innerHTML = '';
+    valueHolder$.innerHTML = '';
+    closeNav();
+
     goHome();
 });
 function goHome() {
@@ -94,6 +101,10 @@ accountsPage$.addEventListener('click', () => {
     console.log('clicked accounts');
     contentHolder$.innerHTML = '';
     buttonHolder$.innerHTML = '';
+    plotHolder$.innerHTML = '';
+    valueHolder$.innerHTML = '';
+    closeNav();
+
     goToAccounts();
 });
 function goToAccounts() {
@@ -133,10 +144,17 @@ statsPage$.addEventListener('click', () => {
     contentHolder$.innerHTML = '';
     buttonHolder$.innerHTML = '';
     totalHolder$.innerHTML = '';
+    plotHolder$.innerHTML = '';
+    valueHolder$.innerHTML = '';
 
-    console.log('clicked sign');
-    showStatistics(socket);
+    closeNav();
+
+    requestStatAccounts(socket);
 });
+
+socket.on(expensesConstants.getStatAccounts, (accounts) => {
+    showStatForm(socket, accounts);
+})
 
 
 //sign page
@@ -145,6 +163,11 @@ signPage$.addEventListener('click', () => {
     contentHolder$.innerHTML = 'Coming soon...';
     buttonHolder$.innerHTML = '';
     totalHolder$.innerHTML = '';
+    plotHolder$.innerHTML = '';
+    valueHolder$.innerHTML = '';
+
+    closeNav();
+
     const headerHolder$: HTMLElement = document.querySelector('.header-content');
     headerHolder$.innerHTML = 'SIGN IN/UP';
 });

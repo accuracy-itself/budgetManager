@@ -115,7 +115,7 @@ export function addExpenseForm(socket, ACCOUNTS) {
             
         </div>
         <div class="expense-controls">
-            <button class="expense-add button">Add expense</button>
+            <button class="expense-add button">Add</button>
         </div>
         </div>
             `;

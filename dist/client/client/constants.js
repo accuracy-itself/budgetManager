@@ -8,6 +8,7 @@ export var expensesConstants;
     expensesConstants.showAccounts = "showAccounts";
     expensesConstants.displayAccounts = "displayAccounts";
     expensesConstants.deleteAccounts = "deleteAccounts";
+    expensesConstants.getStatAccounts = "getStatAccounts";
     expensesConstants.updateAccounts = "updateAccounts";
     expensesConstants.addAccounts = "addAccounts";
     expensesConstants.showIncomes = "showIncomes";

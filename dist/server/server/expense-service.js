@@ -14,18 +14,31 @@ function convertToExpense(expenseDto) {
     return expense;
 }
 class ExpenseService {
-    static async getExpenseByDate(dateFirst, dateSecond) {
+    static async getExpenseByDateAndAccount(dateFirst, dateSecond, account) {
         let Expenses = [];
         const dateFirstString = `${dateFirst.getFullYear()}-${dateFirst.getMonth() + 1}-${dateFirst.getDate()}`;
         const dateSecondString = `${dateSecond.getFullYear()}-${dateSecond.getMonth() + 1}-${dateSecond.getDate()}`;
         console.log(dateFirstString);
         console.log(dateSecondString);
-        await db_connection_js_1.ExpenseModel.find({
-            date: {
-                $gte: dateFirstString,
-                $lte: dateSecondString,
-            }
-        }).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
+        let filter;
+        if (!account) {
+            filter = {
+                date: {
+                    $gte: dateFirstString,
+                    $lte: dateSecondString,
+                }
+            };
+        }
+        else {
+            filter = {
+                date: {
+                    $gte: dateFirstString,
+                    $lte: dateSecondString,
+                },
+                accountId: account.id
+            };
+        }
+        await db_connection_js_1.ExpenseModel.find(filter).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
         console.log(Expenses);
         return Expenses;
     }

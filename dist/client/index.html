@@ -19,25 +19,25 @@
 <body class="body">
   <header class="header">
     <div class="header-main">
-        <span class="open-nav">Menu &#9776</span>
-      <span class="header-content">  
-      </span> 
+      <span class="open-nav">Menu &#9776</span>
+      <span class="header-content">
+      </span>
     </div>
     <!-- waves -->
     <div>
       <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-      viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-      <defs>
-      <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-      </defs>
-      <g class="parallax">
-      <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
-      <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
-      <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
-      <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
-      </g>
+        viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+          <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+        </defs>
+        <g class="parallax">
+          <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+          <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+          <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+          <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+        </g>
       </svg>
-      </div>
+    </div>
   </header>
   <br>
   <div id="mySidenav" class="sidenav">
@@ -54,9 +54,15 @@
   <br>
   <div class="total-container">
   </div>
+  <div class="stat-container">
+    <div class="plot-holder">
+    </div>
+    <div class="value-holder">
+    </div>
+  </div>
   <br>
   <div class="container">
-      <!-- <label for="uname"><b>Username</b></label>
+    <!-- <label for="uname"><b>Username</b></label>
       <input type="text" placeholder="Enter Username" name="uname" required>
       <br>
       <label for="psw"><b>Password</b></label>
@@ -65,12 +71,15 @@
       <button type="submit">Login</button> -->
   </div>
 
+
   <script src="socket.io/socket.io.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script>var exports = {};</script>
   <script type="module" src="./client/client.js"></script>
   <script type="module" src="./client/expenses.js"></script>
   <script type="module" src="./client/constants.js"></script>
-  
+  <!-- <script type="module" src="./client/statistics.js"></script> -->
+
 </body>
 
 </html>

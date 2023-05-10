@@ -1,5 +1,11 @@
 import { expensesConstants } from "./constants.js";
-export function showStatistics(socket) {
+let ACCOUNTS = [];
+export function requestStatAccounts(socket) {
+    console.log("show stats");
+    socket.emit(expensesConstants.getStatAccounts);
+}
+export function showStatForm(socket, accounts) {
+    ACCOUNTS = accounts;
     const buttonHolder$ = document.querySelector('.button-container');
     const contentHolder$ = document.querySelector('.container');
     const headerHolder$ = document.querySelector('.header-content');
@@ -9,10 +15,10 @@ export function showStatistics(socket) {
     buttonHolder$.innerHTML = `
     <div class="statistic-creator">
         <div class="statistic-inputs">
-           <select
+           <select      
                 name="account"
-                id="expense-account"
-                class="expense-account"
+                id="statictic-account"
+                class="statictic-account"
             >
 
             <input
@@ -35,13 +41,101 @@ export function showStatistics(socket) {
         </div>
     </div>
     `;
+    const accountSelect$ = document.querySelector(".statictic-account");
+    accounts.forEach((account) => {
+        accountSelect$.innerHTML += `
+            <option value="${account.id}">${account.name} ${account.currency}</option> 
+        `;
+    });
     const dateFirst$ = document.querySelector(".statistic-date-first");
     const dateSecond$ = document.querySelector(".statistic-date-second");
-    const showSats$ = document.querySelector(".statistic-add");
-    showSats$.onclick = () => {
-        socket.emit(expensesConstants.getStatExpenses, { dateFirst: dateFirst$.value, dateSecond: dateSecond$.value });
-        socket.on(expensesConstants.getStatExpenses, (EXPENSES) => {
-            console.log(EXPENSES);
-        });
+    const showStats$ = document.querySelector(".statistic-add");
+    dateFirst$.valueAsDate = new Date("2000-01-01");
+    dateSecond$.valueAsDate = new Date();
+    showStats$.onclick = () => {
+        const accountSelect$ = document.querySelector(".statictic-account");
+        const expenseAccount$ = document.querySelector(".statictic-account");
+        console.log("show stats onclick: ", ACCOUNTS);
+        const accountSelected = ACCOUNTS[ACCOUNTS.findIndex(account => account.id == Number(accountSelect$.options[expenseAccount$.selectedIndex].value))];
+        if (dateFirst$.valueAsDate == null || dateSecond$.valueAsDate == null) {
+            alert('write dates!!');
+        }
+        else {
+            socket.emit(expensesConstants.getStatExpenses, { dateFirst: dateFirst$.valueAsDate, dateSecond: dateSecond$.valueAsDate, account: accountSelected });
+            socket.on(expensesConstants.getStatExpenses, (EXPENSES) => {
+                console.log(EXPENSES);
+                showStats(accountSelected, EXPENSES);
+            });
+        }
     };
+}
+function showStats(accountSelected, EXPENSES) {
+    const contentHolder$ = document.querySelector('.container');
+    const valueHolder$ = document.querySelector('.value-holder');
+    let totalIncomes = 0;
+    let totalExpenses = 0;
+    contentHolder$.innerHTML = '';
+    EXPENSES.forEach((expense) => {
+        const date = new Date(expense.date);
+        if (expense.expense) {
+            totalExpenses += expense.price;
+        }
+        else {
+            totalIncomes += expense.price;
+        }
+        contentHolder$.innerHTML += `
+            <div class="expense ${expense.expense} ${expense.id}">
+                <span class="expenses-list__expense-comment">
+                    ${expense.comment}
+                </span> 
+                <span class="expenses-list__expense-price">
+                    ${expense.price}
+                    ${accountSelected.currency}
+                </span>
+                <span class="expenses-list__expense-date">
+                    ${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}
+                </span>
+                <span class="expense-account">
+                    ${accountSelected.name}
+                </span>
+            </div>
+            `;
+    });
+    valueHolder$.innerHTML = `
+    <div class="total-values">
+        <span class="account-stat-name">
+        ${accountSelected.name}.
+        </span>
+        Total incomes:
+        <span class="total-incomes">
+            ${totalIncomes}.
+        </span>
+        Total expenses:
+        <span class="total-expenses">
+            ${totalExpenses}.
+        </span>
+    </div>
+    `;
+    drawStats(totalIncomes, totalExpenses);
+}
+function drawStats(incomes, expenses) {
+    const plotHolder$ = document.querySelector('.plot-holder');
+    const width = 400;
+    const height = 200;
+    plotHolder$.innerHTML = `<canvas id="plot-canvas" width="${width}px" height="${height}px"></canvas>`;
+    if (incomes != 0 && expenses != 0) {
+        console.log('incomes');
+        const incomesHeight = incomes / (incomes + expenses) * 100 * 2;
+        const expensesHeight = expenses / (incomes + expenses) * 100 * 2;
+        let canvas = document.getElementById('plot-canvas');
+        let ctx = canvas.getContext('2d');
+        drawHistogram(ctx, 100, height - incomesHeight, 80, incomesHeight, 'yellow');
+        drawHistogram(ctx, width - 100 - 80, height - expensesHeight, 80, expensesHeight, 'green');
+        function drawHistogram(ctx, x, y, w, h, color) {
+            ctx.save();
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+            ctx.restore();
+        }
+    }
 }

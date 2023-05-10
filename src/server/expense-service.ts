@@ -1,4 +1,4 @@
-import { Expense } from '../types/model.js'
+import { Account, Expense } from '../types/model.js'
 import { deleteExpenses } from './constants.js';
 import { ExpenseModel } from './db-connection.js';
 
@@ -16,18 +16,32 @@ function convertToExpense(expenseDto) {
 }
 
 export class ExpenseService {
-    static async getExpenseByDate(dateFirst: Date, dateSecond: Date) {
+    static async getExpenseByDateAndAccount(dateFirst: Date, dateSecond: Date, account: Account) {
         let Expenses: Expense[] = [];
         const dateFirstString = `${dateFirst.getFullYear()}-${dateFirst.getMonth() + 1}-${dateFirst.getDate()}`;
         const dateSecondString = `${dateSecond.getFullYear()}-${dateSecond.getMonth() + 1}-${dateSecond.getDate()}`;
         console.log(dateFirstString);
         console.log(dateSecondString);
-        await ExpenseModel.find({
-            date: {
-                $gte: dateFirstString,
-                $lte: dateSecondString,
+
+        let filter;
+        if(!account) {
+            filter = {
+                date: {
+                    $gte: dateFirstString,
+                    $lte: dateSecondString,
+                }
             }
-        }).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
+        } else {
+            filter = {
+                date: {
+                    $gte: dateFirstString,
+                    $lte: dateSecondString,
+                }, 
+                accountId: account.id
+            }
+        }
+
+        await ExpenseModel.find(filter).then(expenses => expenses.forEach(expense => Expenses.push(convertToExpense(expense))));
         console.log(Expenses);
 
         return Expenses;

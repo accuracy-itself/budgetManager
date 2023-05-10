@@ -3,10 +3,24 @@
     column-gap: 5px;
 }
 
-.statistic-creator input {
+.statistic-creator input, .statistic-creator select {
     margin: 0.2rem 0;
     font-size: 1.2rem;
     padding: 0.5rem;
     border-radius: 25px;
-    width: 40%;
+    border: 2px solid #009879;
+    background-color: white;
+}
+
+.account-stat-name {
+    font-weight: bold;
+}
+
+.stat-container {
+    text-align: center;
+}
+
+#plot-canvas {
+    border: 1px solid black;
+    margin-top: 5px;
 }
